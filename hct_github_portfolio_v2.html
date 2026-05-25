@@ -1,0 +1,298 @@
+
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800&family=Nunito+Sans:wght@400;600&display=swap');
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  :root { --teal: #45C2C7; --teal-dark: #2a9da2; --navy: #1A2B4A; --navy-light: #243a62; }
+  #portfolio-root { font-family: 'Nunito', sans-serif; background: transparent; padding-bottom: 2rem; }
+
+  .hero {
+    background: var(--navy);
+    padding: 2rem 1.5rem 1.5rem;
+    position: relative; overflow: hidden;
+  }
+  .hero::before { content:''; position:absolute; top:-40px; right:-40px; width:200px; height:200px; border-radius:50%; background:rgba(69,194,199,0.12); }
+  .hero::after { content:''; position:absolute; bottom:-60px; left:20%; width:300px; height:300px; border-radius:50%; background:rgba(69,194,199,0.07); }
+  .hero-inner { position:relative; z-index:1; }
+  .logo-row { display:flex; align-items:center; gap:14px; margin-bottom:1.25rem; }
+  .logo-circle { width:52px; height:52px; border-radius:50%; background:var(--teal); display:flex; align-items:center; justify-content:center; flex-shrink:0; font-weight:800; font-size:18px; color:var(--navy); letter-spacing:-0.5px; border:3px solid rgba(255,255,255,0.2); }
+  .logo-text h1 { color:#fff; font-size:20px; font-weight:800; line-height:1.1; }
+  .logo-text p { color:var(--teal); font-size:11px; font-weight:600; letter-spacing:1.5px; text-transform:uppercase; margin-top:2px; }
+  .hero-tagline { color:rgba(255,255,255,0.7); font-size:14px; font-family:'Nunito Sans',sans-serif; margin-bottom:1.25rem; }
+  .stats-row { display:flex; gap:1rem; flex-wrap:wrap; }
+  .stat-pill { background:rgba(69,194,199,0.15); border:1px solid rgba(69,194,199,0.3); border-radius:20px; padding:5px 14px; color:var(--teal); font-size:13px; font-weight:600; }
+
+  .controls { padding:1rem 1.5rem; display:flex; gap:10px; flex-wrap:wrap; align-items:center; border-bottom:0.5px solid var(--color-border-tertiary); }
+  .search-wrap { flex:1; min-width:180px; position:relative; }
+  .search-wrap i { position:absolute; left:10px; top:50%; transform:translateY(-50%); color:var(--color-text-secondary); font-size:16px; }
+  #search { width:100%; padding-left:34px; font-family:'Nunito',sans-serif; font-size:14px; }
+  .sort-select { font-family:'Nunito',sans-serif; font-size:13px; border:1px solid var(--color-border-tertiary); border-radius:8px; padding:6px 10px; color:var(--color-text-secondary); background:var(--color-background-primary); }
+
+  #result-count { font-size:13px; color:var(--color-text-secondary); font-family:'Nunito Sans',sans-serif; padding:0.75rem 1.5rem 0; }
+
+  .repo-grid { display:grid; grid-template-columns:repeat(auto-fill, minmax(280px, 1fr)); gap:1.25rem; padding:1rem 1.5rem; }
+
+  .repo-card {
+    background:var(--color-background-primary);
+    border:0.5px solid var(--color-border-tertiary);
+    border-radius:var(--border-radius-lg);
+    overflow:hidden;
+    display:flex; flex-direction:column;
+    transition:border-color 0.15s, transform 0.15s;
+  }
+  .repo-card:hover { border-color:var(--teal); transform:translateY(-3px); }
+
+  .thumb-wrap {
+    width:100%; height:160px;
+    background:var(--color-background-secondary);
+    position:relative; overflow:hidden;
+    flex-shrink:0;
+  }
+
+  .thumb-wrap iframe {
+    width:1280px; height:720px;
+    transform:scale(0.234);
+    transform-origin:top left;
+    border:none;
+    pointer-events:none;
+  }
+
+  .thumb-overlay {
+    position:absolute; inset:0;
+    background:transparent;
+    cursor:pointer;
+  }
+
+  .thumb-placeholder {
+    width:100%; height:100%;
+    display:flex; flex-direction:column;
+    align-items:center; justify-content:center;
+    gap:8px;
+    color:var(--color-text-secondary);
+    font-size:12px; font-family:'Nunito Sans',sans-serif;
+  }
+
+  .thumb-placeholder i { font-size:28px; color:var(--color-border-secondary); }
+
+  .card-body { padding:1rem 1.1rem; display:flex; flex-direction:column; gap:8px; flex:1; }
+
+  .card-top { display:flex; align-items:flex-start; justify-content:space-between; gap:8px; }
+  .repo-name { font-size:14px; font-weight:700; color:var(--color-text-primary); word-break:break-word; line-height:1.3; }
+  .live-badge { background:var(--navy); color:var(--teal); font-size:10px; font-weight:700; padding:3px 8px; border-radius:10px; white-space:nowrap; flex-shrink:0; letter-spacing:0.5px; }
+
+  .repo-desc { font-size:12px; color:var(--color-text-secondary); font-family:'Nunito Sans',sans-serif; line-height:1.5; flex:1; }
+
+  .repo-meta { display:flex; align-items:center; gap:12px; flex-wrap:wrap; }
+  .lang-dot { width:10px; height:10px; border-radius:50%; display:inline-block; flex-shrink:0; }
+  .meta-item { display:flex; align-items:center; gap:5px; font-size:12px; color:var(--color-text-secondary); font-family:'Nunito Sans',sans-serif; }
+
+  .card-actions { display:flex; gap:8px; margin-top:4px; }
+  .btn-sm { flex:1; padding:6px 10px; border-radius:8px; font-family:'Nunito',sans-serif; font-size:12px; font-weight:600; cursor:pointer; text-align:center; text-decoration:none; display:flex; align-items:center; justify-content:center; gap:5px; border:1px solid var(--color-border-tertiary); color:var(--color-text-secondary); background:transparent; transition:all 0.15s; }
+  .btn-sm:hover { border-color:var(--color-border-secondary); color:var(--color-text-primary); }
+  .btn-sm.primary { background:var(--navy); color:var(--teal); border-color:var(--navy); }
+  .btn-sm.primary:hover { background:var(--navy-light); }
+
+  .loading-state { text-align:center; padding:3rem 2rem; grid-column:1/-1; }
+  .spinner { width:32px; height:32px; border:3px solid var(--color-border-tertiary); border-top-color:var(--teal); border-radius:50%; margin:0 auto 1rem; animation:spin 0.7s linear infinite; }
+  @keyframes spin { to { transform:rotate(360deg); } }
+  .empty-state { text-align:center; padding:3rem 2rem; color:var(--color-text-secondary); font-size:14px; grid-column:1/-1; }
+
+  .footer-bar { padding:1rem 1.5rem; border-top:0.5px solid var(--color-border-tertiary); display:flex; align-items:center; justify-content:space-between; flex-wrap:wrap; gap:8px; }
+  .footer-bar span { font-size:12px; color:var(--color-text-secondary); font-family:'Nunito Sans',sans-serif; }
+  .gh-link { font-size:12px; font-weight:600; color:var(--teal); text-decoration:none; display:flex; align-items:center; gap:5px; }
+
+  .notice-bar { background:rgba(69,194,199,0.08); border-bottom:0.5px solid rgba(69,194,199,0.2); padding:8px 1.5rem; font-size:12px; color:var(--color-text-secondary); font-family:'Nunito Sans',sans-serif; display:flex; align-items:center; gap:8px; }
+  .notice-bar i { color:var(--teal); }
+</style>
+
+<div id="portfolio-root">
+  <div class="hero">
+    <div class="hero-inner">
+      <div class="logo-row">
+        <div class="logo-circle">HCT</div>
+        <div class="logo-text">
+          <h1>HCT R&D</h1>
+          <p>How Care Transforms</p>
+        </div>
+      </div>
+      <p class="hero-tagline">Healthcare &amp; Technology Institute · GitHub Projects &amp; Web Tools</p>
+      <div class="stats-row">
+        <span class="stat-pill" id="stat-total"><i class="ti ti-loader" aria-hidden="true"></i> Loading...</span>
+        <span class="stat-pill" id="stat-live" style="display:none"><i class="ti ti-world" aria-hidden="true"></i> <span id="live-count">0</span> live sites</span>
+        <span class="stat-pill" id="stat-langs" style="display:none"><i class="ti ti-code" aria-hidden="true"></i> <span id="lang-count">0</span> languages</span>
+      </div>
+    </div>
+  </div>
+
+  <div class="notice-bar">
+    <i class="ti ti-info-circle" aria-hidden="true"></i>
+    Live site thumbnails are rendered previews of each deployed GitHub Pages site. Click any card to open the full site.
+  </div>
+
+  <div class="controls">
+    <div class="search-wrap">
+      <i class="ti ti-search" aria-hidden="true"></i>
+      <input type="text" id="search" placeholder="Search repositories..." />
+    </div>
+    <select class="sort-select" id="sort">
+      <option value="updated">Recently updated</option>
+      <option value="stars">Most stars</option>
+      <option value="name">Alphabetical</option>
+      <option value="created">Newest</option>
+    </select>
+  </div>
+
+  <p id="result-count"></p>
+
+  <div class="repo-grid" id="repo-grid">
+    <div class="loading-state">
+      <div class="spinner"></div>
+      <p style="color:var(--color-text-secondary);font-size:14px;">Fetching repositories...</p>
+    </div>
+  </div>
+
+  <div class="footer-bar">
+    <span>Westar Building, Shaw Blvd, Pasig City · Healthcare &amp; Technology Institute Inc.</span>
+    <a class="gh-link" href="https://github.com/rdeduc-design" target="_blank">
+      <i class="ti ti-brand-github" aria-hidden="true"></i> rdeduc-design
+    </a>
+  </div>
+</div>
+
+<script>
+const LANG_COLORS = {
+  JavaScript:'#f1e05a', HTML:'#e34c26', CSS:'#563d7c',
+  Python:'#3572A5', TypeScript:'#2b7489', Shell:'#89e051',
+  Vue:'#41b883', SCSS:'#c6538c', PHP:'#4F5D95', Ruby:'#701516'
+};
+
+let allRepos = [];
+
+async function fetchAllRepos(username) {
+  let repos = [], page = 1;
+  while (true) {
+    const res = await fetch(`https://api.github.com/users/${username}/repos?per_page=100&page=${page}&type=public`);
+    if (!res.ok) throw new Error('GitHub API error ' + res.status);
+    const data = await res.json();
+    repos = repos.concat(data);
+    if (data.length < 100) break;
+    page++;
+  }
+  return repos;
+}
+
+function getPageUrl(repo) {
+  if (repo.homepage && repo.homepage.trim() !== '') return repo.homepage.trim();
+  return null;
+}
+
+function formatDate(d) {
+  return new Date(d).toLocaleDateString('en-PH', { month:'short', year:'numeric' });
+}
+
+function getLangColor(lang) {
+  return LANG_COLORS[lang] || '#888';
+}
+
+function buildCard(repo) {
+  const liveUrl = getPageUrl(repo);
+  const lang = repo.language;
+
+  const thumbHtml = liveUrl
+    ? `<div class="thumb-wrap">
+        <iframe
+          src="${liveUrl}"
+          scrolling="no"
+          loading="lazy"
+          sandbox="allow-scripts allow-same-origin"
+          title="Preview of ${repo.name}"
+        ></iframe>
+        <div class="thumb-overlay" onclick="window.open('${liveUrl}','_blank')" title="Open ${repo.name}"></div>
+       </div>`
+    : `<div class="thumb-wrap">
+        <div class="thumb-placeholder">
+          <i class="ti ti-code-off" aria-hidden="true"></i>
+          <span>No deployed site</span>
+        </div>
+       </div>`;
+
+  const visitBtn = liveUrl
+    ? `<a class="btn-sm primary" href="${liveUrl}" target="_blank"><i class="ti ti-external-link" style="font-size:13px" aria-hidden="true"></i> Visit Site</a>`
+    : '';
+
+  return `
+  <div class="repo-card">
+    ${thumbHtml}
+    <div class="card-body">
+      <div class="card-top">
+        <span class="repo-name">${repo.name}</span>
+        ${liveUrl ? '<span class="live-badge">LIVE</span>' : ''}
+      </div>
+      <p class="repo-desc">${repo.description || '<span style="opacity:0.45">No description provided</span>'}</p>
+      <div class="repo-meta">
+        ${lang ? `<span class="meta-item"><span class="lang-dot" style="background:${getLangColor(lang)}"></span>${lang}</span>` : ''}
+        ${repo.stargazers_count > 0 ? `<span class="meta-item"><i class="ti ti-star" style="font-size:13px" aria-hidden="true"></i>${repo.stargazers_count}</span>` : ''}
+        <span class="meta-item"><i class="ti ti-clock" style="font-size:13px" aria-hidden="true"></i>${formatDate(repo.updated_at)}</span>
+      </div>
+      <div class="card-actions">
+        <a class="btn-sm" href="${repo.html_url}" target="_blank"><i class="ti ti-brand-github" style="font-size:13px" aria-hidden="true"></i> Code</a>
+        ${visitBtn}
+      </div>
+    </div>
+  </div>`;
+}
+
+function renderRepos(repos) {
+  const grid = document.getElementById('repo-grid');
+  const count = document.getElementById('result-count');
+  if (repos.length === 0) {
+    grid.innerHTML = `<div class="empty-state"><i class="ti ti-search-off" style="font-size:32px;color:var(--teal);display:block;margin-bottom:8px" aria-hidden="true"></i>No repositories match.</div>`;
+    count.textContent = '';
+    return;
+  }
+  count.textContent = `Showing ${repos.length} ${repos.length === 1 ? 'repository' : 'repositories'}`;
+  grid.innerHTML = repos.map(buildCard).join('');
+}
+
+function applyFiltersAndSort() {
+  const q = document.getElementById('search').value.toLowerCase();
+  const sort = document.getElementById('sort').value;
+
+  let filtered = allRepos.filter(r =>
+    r.name.toLowerCase().includes(q) || (r.description || '').toLowerCase().includes(q)
+  );
+
+  if (sort === 'updated') filtered.sort((a,b) => new Date(b.updated_at) - new Date(a.updated_at));
+  else if (sort === 'stars') filtered.sort((a,b) => b.stargazers_count - a.stargazers_count);
+  else if (sort === 'name') filtered.sort((a,b) => a.name.localeCompare(b.name));
+  else if (sort === 'created') filtered.sort((a,b) => new Date(b.created_at) - new Date(a.created_at));
+
+  renderRepos(filtered);
+}
+
+async function init() {
+  try {
+    const repos = await fetchAllRepos('rdeduc-design');
+
+    const liveRepos = repos.filter(r => getPageUrl(r));
+    const langs = new Set(repos.map(r => r.language).filter(Boolean));
+
+    allRepos = repos;
+
+    document.getElementById('stat-total').innerHTML = `<i class="ti ti-folders" aria-hidden="true"></i> ${repos.length} repositories`;
+    document.getElementById('live-count').textContent = liveRepos.length;
+    document.getElementById('lang-count').textContent = langs.size;
+    document.getElementById('stat-live').style.display = '';
+    document.getElementById('stat-langs').style.display = '';
+
+    applyFiltersAndSort();
+  } catch(err) {
+    document.getElementById('repo-grid').innerHTML = `<div class="empty-state" style="grid-column:1/-1"><i class="ti ti-alert-circle" style="font-size:32px;color:#E24B4A;display:block;margin-bottom:8px" aria-hidden="true"></i><p>Could not load repositories. GitHub API may be rate-limited — try again shortly.</p></div>`;
+    document.getElementById('stat-total').textContent = 'Error loading';
+  }
+}
+
+document.getElementById('search').addEventListener('input', applyFiltersAndSort);
+document.getElementById('sort').addEventListener('change', applyFiltersAndSort);
+
+init();
+</script>
